@@ -21,7 +21,7 @@ import { useScreenshot } from '../hooks/useScreenshot';
 import TOTPCard from '../components/TOTPCard';
 import EmptyState from '../components/EmptyState';
 import FABMenu from '../components/FABMenu';
-import { COLORS, SIZES } from '../constants/theme';
+import { COLORS, FONTS, SIZES } from '../constants/theme';
 import { Account, RootStackParamList } from '../types';
 
 type Nav = StackNavigationProp<RootStackParamList>;
@@ -135,8 +135,8 @@ const styles = StyleSheet.create({
     borderBottomColor: COLORS.border,
   },
   headerTitle: {
+    fontFamily: FONTS.bold,
     fontSize: SIZES.xl,
-    fontWeight: '700',
     color: COLORS.textPrimary,
   },
   headerActions: {
@@ -163,12 +163,13 @@ const styles = StyleSheet.create({
     borderTopColor: COLORS.border,
   },
   guideText: {
+    fontFamily: FONTS.regular,
     fontSize: SIZES.sm,
     color: COLORS.textSecondary,
   },
   guideLink: {
+    fontFamily: FONTS.semiBold,
     fontSize: SIZES.sm,
     color: COLORS.primary,
-    fontWeight: '600',
   },
 });

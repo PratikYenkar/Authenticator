@@ -1,19 +1,16 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import {
-  View,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-  ActivityIndicator,
+  View, Text, TouchableOpacity, StyleSheet, ActivityIndicator,
 } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useSettingsStore } from '../store/settingsStore';
 import { useBiometrics } from '../hooks/useBiometrics';
-import { COLORS, SIZES } from '../constants/theme';
+import { COLORS, FONTS, SIZES } from '../constants/theme';
 import { RootStackParamList } from '../types';
 
+import OnboardingScreen from '../screens/OnboardingScreen';
 import HomeScreen from '../screens/HomeScreen';
 import QRScannerScreen from '../screens/QRScannerScreen';
 import ManualEntryScreen from '../screens/ManualEntryScreen';
@@ -27,9 +24,10 @@ const Stack = createStackNavigator<RootStackParamList>();
 function SplashScreen() {
   return (
     <View style={splash.container}>
-      <Icon name="shield-checkmark" size={64} color={COLORS.primary} />
-      <Text style={splash.title}>2FA Authenticator</Text>
-      <ActivityIndicator size="large" color={COLORS.primary} style={{ marginTop: 24 }} />
+      <Icon name="shield-checkmark" size={72} color={COLORS.primary} />
+      <Text style={splash.title}>Authenticator</Text>
+      <Text style={splash.sub}>Your security, simplified</Text>
+      <ActivityIndicator size="large" color={COLORS.primary} style={{ marginTop: 32 }} />
     </View>
   );
 }
@@ -53,15 +51,25 @@ function BiometricLockScreen({ onRetry }: { onRetry: () => void }) {
 export default function AppNavigator() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const { biometricEnabled } = useSettingsStore();
+  const [showOnboarding, setShowOnboarding] = useState(false);
+  const { biometricEnabled, hasOnboarded, setHasOnboarded } = useSettingsStore();
   const { authenticate, checkAvailability } = useBiometrics();
 
   useEffect(() => {
-    initAuth();
+    initApp();
   }, []);
 
-  const initAuth = async () => {
+  const initApp = async () => {
     setIsLoading(true);
+    if (!hasOnboarded) {
+      setShowOnboarding(true);
+      setIsLoading(false);
+      return;
+    }
+    await runAuthCheck();
+  };
+
+  const runAuthCheck = async () => {
     if (biometricEnabled) {
       const available = await checkAvailability();
       if (available) {
@@ -76,8 +84,16 @@ export default function AppNavigator() {
     setIsLoading(false);
   };
 
+  const handleOnboardingDone = useCallback(async () => {
+    setHasOnboarded(true);
+    setShowOnboarding(false);
+    setIsLoading(true);
+    await runAuthCheck();
+  }, []);
+
   if (isLoading) return <SplashScreen />;
-  if (!isAuthenticated) return <BiometricLockScreen onRetry={initAuth} />;
+  if (showOnboarding) return <OnboardingScreen onDone={handleOnboardingDone} />;
+  if (!isAuthenticated) return <BiometricLockScreen onRetry={runAuthCheck} />;
 
   return (
     <NavigationContainer>
@@ -89,44 +105,16 @@ export default function AppNavigator() {
             shadowOpacity: 0,
           },
           headerTintColor: COLORS.textPrimary,
-          headerTitleStyle: { fontWeight: '600', fontSize: 18 },
+          headerTitleStyle: { fontFamily: FONTS.semiBold, fontSize: 18 },
           cardStyle: { backgroundColor: COLORS.background },
         }}>
-        <Stack.Screen
-          name="Home"
-          component={HomeScreen}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="QRScanner"
-          component={QRScannerScreen}
-          options={{ title: 'Scan QR Code' }}
-        />
-        <Stack.Screen
-          name="ManualEntry"
-          component={ManualEntryScreen}
-          options={{ title: 'Add Setup Key' }}
-        />
-        <Stack.Screen
-          name="GuideList"
-          component={GuideListScreen}
-          options={{ title: '2FA Guide' }}
-        />
-        <Stack.Screen
-          name="GuideDetail"
-          component={GuideDetailScreen}
-          options={({ route }) => ({ title: route.params.service.name })}
-        />
-        <Stack.Screen
-          name="Settings"
-          component={SettingsScreen}
-          options={{ title: 'Settings' }}
-        />
-        <Stack.Screen
-          name="RecentlyDeleted"
-          component={RecentlyDeletedScreen}
-          options={{ title: 'Recently Deleted' }}
-        />
+        <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="QRScanner" component={QRScannerScreen} options={{ title: 'Scan QR Code' }} />
+        <Stack.Screen name="ManualEntry" component={ManualEntryScreen} options={{ title: 'Add Setup Key' }} />
+        <Stack.Screen name="GuideList" component={GuideListScreen} options={{ title: '2FA Guide' }} />
+        <Stack.Screen name="GuideDetail" component={GuideDetailScreen} options={({ route }) => ({ title: route.params.service.name })} />
+        <Stack.Screen name="Settings" component={SettingsScreen} options={{ title: 'Settings' }} />
+        <Stack.Screen name="RecentlyDeleted" component={RecentlyDeletedScreen} options={{ title: 'Recently Deleted' }} />
       </Stack.Navigator>
     </NavigationContainer>
   );
@@ -134,59 +122,44 @@ export default function AppNavigator() {
 
 const splash = StyleSheet.create({
   container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: COLORS.background,
-    gap: 12,
+    flex: 1, alignItems: 'center', justifyContent: 'center',
+    backgroundColor: COLORS.background, gap: 10,
   },
   title: {
-    fontSize: SIZES.xxxl,
-    fontWeight: '700',
-    color: COLORS.primary,
+    fontFamily: FONTS.bold, fontSize: SIZES.xxxl,
+    color: COLORS.primary, marginTop: 4,
+  },
+  sub: {
+    fontFamily: FONTS.regular, fontSize: SIZES.md,
+    color: COLORS.textSecondary,
   },
 });
 
 const lock = StyleSheet.create({
   container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: COLORS.background,
-    padding: 32,
+    flex: 1, alignItems: 'center', justifyContent: 'center',
+    backgroundColor: COLORS.background, padding: 32,
   },
   iconWrap: {
-    width: 96,
-    height: 96,
-    borderRadius: 48,
+    width: 96, height: 96, borderRadius: 48,
     backgroundColor: COLORS.primaryLight,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 24,
+    alignItems: 'center', justifyContent: 'center', marginBottom: 24,
   },
   title: {
-    fontSize: SIZES.xxl,
-    fontWeight: '700',
+    fontFamily: FONTS.bold, fontSize: SIZES.xxl,
     color: COLORS.textPrimary,
   },
   sub: {
-    fontSize: SIZES.base,
-    color: COLORS.textSecondary,
-    textAlign: 'center',
-    marginTop: 8,
-    marginBottom: 32,
+    fontFamily: FONTS.regular, fontSize: SIZES.base,
+    color: COLORS.textSecondary, textAlign: 'center',
+    marginTop: 8, marginBottom: 32,
   },
   btn: {
-    backgroundColor: COLORS.primary,
-    paddingHorizontal: 32,
-    paddingVertical: 14,
-    borderRadius: 12,
-    flexDirection: 'row',
-    alignItems: 'center',
+    backgroundColor: COLORS.primary, paddingHorizontal: 32,
+    paddingVertical: 14, borderRadius: 12,
+    flexDirection: 'row', alignItems: 'center',
   },
   btnText: {
-    color: COLORS.white,
-    fontSize: SIZES.base,
-    fontWeight: '700',
+    fontFamily: FONTS.semiBold, color: COLORS.white, fontSize: SIZES.base,
   },
 });

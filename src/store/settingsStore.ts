@@ -9,12 +9,14 @@ interface SettingsState {
   darkMode: boolean;
   language: string;
   isPremium: boolean;
+  hasOnboarded: boolean;
   setBiometric: (val: boolean) => void;
   setNotifications: (val: boolean) => void;
   setScreenshot: (val: boolean) => void;
   setDarkMode: (val: boolean) => void;
   setLanguage: (val: string) => void;
   setPremium: (val: boolean) => void;
+  setHasOnboarded: (val: boolean) => void;
 }
 
 export const useSettingsStore = create<SettingsState>()(
@@ -26,12 +28,14 @@ export const useSettingsStore = create<SettingsState>()(
       darkMode: false,
       language: 'en',
       isPremium: false,
+      hasOnboarded: false,
       setBiometric: val => set({ biometricEnabled: val }),
       setNotifications: val => set({ notificationsEnabled: val }),
       setScreenshot: val => set({ screenshotAllowed: val }),
       setDarkMode: val => set({ darkMode: val }),
       setLanguage: val => set({ language: val }),
       setPremium: val => set({ isPremium: val }),
+      setHasOnboarded: val => set({ hasOnboarded: val }),
     }),
     {
       name: 'app_settings_v1',

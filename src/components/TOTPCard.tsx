@@ -1,10 +1,6 @@
 import React, { useCallback } from 'react';
 import {
-  View,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-  Alert,
+  View, Text, TouchableOpacity, StyleSheet, Alert,
 } from 'react-native';
 import Clipboard from '@react-native-clipboard/clipboard';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -12,8 +8,8 @@ import Toast from 'react-native-toast-message';
 import { Account } from '../types';
 import { useTOTP } from '../hooks/useTOTP';
 import CountdownRing from './CountdownRing';
-import { COLORS, SHADOWS, SIZES } from '../constants/theme';
-import { getServiceColor, getServiceInitial } from '../utils/serviceLogos';
+import ServiceLogo from './ServiceLogo';
+import { COLORS, FONTS, SHADOWS, SIZES } from '../constants/theme';
 import { useAccountStore } from '../store/accountStore';
 
 interface Props {
@@ -29,7 +25,7 @@ function TOTPCard({ account }: Props) {
     Toast.show({
       type: 'success',
       text1: 'Code Copied!',
-      text2: 'Clears in 30 seconds',
+      text2: 'Auto-clears in 30 seconds',
       visibilityTime: 2000,
     });
     setTimeout(() => Clipboard.setString(''), 30000);
@@ -38,46 +34,34 @@ function TOTPCard({ account }: Props) {
   const handleLongPress = useCallback(() => {
     Alert.alert(account.issuer, 'What would you like to do?', [
       {
-        text: 'Delete',
+        text: 'Delete Account',
         style: 'destructive',
         onPress: () => {
           removeAccount(account.id);
-          Toast.show({
-            type: 'info',
-            text1: 'Account Deleted',
-            text2: 'Moved to Recently Deleted',
-          });
+          Toast.show({ type: 'info', text1: 'Moved to Recently Deleted' });
         },
       },
       { text: 'Cancel', style: 'cancel' },
     ]);
   }, [account, removeAccount]);
 
-  const serviceColor = getServiceColor(account.issuer);
-  const initial = getServiceInitial(account.issuer);
-
   return (
     <TouchableOpacity
       style={styles.card}
       onPress={handlePress}
       onLongPress={handleLongPress}
-      activeOpacity={0.7}>
-      <View style={[styles.logo, { backgroundColor: serviceColor }]}>
-        <Text style={styles.logoText}>{initial}</Text>
-      </View>
+      activeOpacity={0.75}>
+
+      <ServiceLogo issuer={account.issuer} size={46} />
 
       <View style={styles.info}>
-        <Text style={styles.issuer} numberOfLines={1}>
-          {account.issuer}
-        </Text>
+        <Text style={styles.issuer} numberOfLines={1}>{account.issuer}</Text>
         {account.username ? (
-          <Text style={styles.username} numberOfLines={1}>
-            {account.username}
-          </Text>
+          <Text style={styles.username} numberOfLines={1}>{account.username}</Text>
         ) : null}
         <View style={styles.codeRow}>
           <Text style={styles.code}>{formattedCode}</Text>
-          <Icon name="copy-outline" size={16} color={COLORS.textLight} style={styles.copyIcon} />
+          <Icon name="copy-outline" size={14} color={COLORS.textLight} style={styles.copyIcon} />
         </View>
       </View>
 
@@ -91,8 +75,9 @@ export default React.memo(TOTPCard);
 const styles = StyleSheet.create({
   card: {
     backgroundColor: COLORS.cardBg,
-    borderRadius: SIZES.radius,
-    padding: 16,
+    borderRadius: 16,
+    paddingHorizontal: 16,
+    paddingVertical: 14,
     marginHorizontal: 16,
     flexDirection: 'row',
     alignItems: 'center',
@@ -100,46 +85,34 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: COLORS.border,
   },
-  logo: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  logoText: {
-    color: COLORS.white,
-    fontSize: 18,
-    fontWeight: '700',
-  },
   info: {
     flex: 1,
     marginHorizontal: 12,
   },
   issuer: {
-    fontSize: 15,
-    fontWeight: '600',
+    fontFamily: FONTS.semiBold,
+    fontSize: SIZES.base,
     color: COLORS.textPrimary,
   },
   username: {
-    fontSize: 12,
+    fontFamily: FONTS.regular,
+    fontSize: SIZES.sm,
     color: COLORS.textSecondary,
     marginTop: 1,
   },
   codeRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: 4,
+    marginTop: 5,
   },
   code: {
+    fontFamily: FONTS.bold,
     fontSize: 26,
-    fontWeight: '700',
     color: COLORS.primary,
     letterSpacing: 3,
-    fontFamily: 'monospace',
   },
   copyIcon: {
     marginLeft: 8,
-    marginTop: 4,
+    marginTop: 2,
   },
 });

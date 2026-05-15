@@ -1,4 +1,4 @@
-import { Platform, Dimensions } from 'react-native';
+import { Dimensions } from 'react-native';
 
 const { width, height } = Dimensions.get('window');
 
@@ -22,8 +22,10 @@ export const COLORS = {
 };
 
 export const FONTS = {
-  regular: Platform.OS === 'ios' ? 'System' : 'Roboto',
-  mono: Platform.OS === 'ios' ? 'Courier' : 'monospace',
+  regular: 'Poppins-Regular',
+  medium: 'Poppins-Medium',
+  semiBold: 'Poppins-SemiBold',
+  bold: 'Poppins-Bold',
 };
 
 export const SIZES = {
