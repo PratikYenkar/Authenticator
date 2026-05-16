@@ -14,6 +14,7 @@ import { useSettingsStore } from '../store/settingsStore';
 import { useBiometrics } from '../hooks/useBiometrics';
 import { useScreenshot } from '../hooks/useScreenshot';
 import PremiumBanner from '../components/PremiumBanner';
+import AdBanner from '../components/AdBanner';
 import SectionHeader from '../components/SectionHeader';
 import SettingsRow from '../components/SettingsRow';
 import { useColors, AppColors } from '../constants/theme';
@@ -102,6 +103,7 @@ export default function SettingsScreen() {
     <SafeAreaView style={styles.safe} edges={['bottom']}>
       <ScrollView showsVerticalScrollIndicator={false}>
         <PremiumBanner />
+        <AdBanner />
 
         <SectionHeader title={t.preferences} />
         <SettingsRow

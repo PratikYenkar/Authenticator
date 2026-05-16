@@ -7,6 +7,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import Svg, { Rect, Circle, Path, G } from 'react-native-svg';
 import { useColors, AppColors, FONTS, SIZES } from '../constants/theme';
 import { RootStackParamList } from '../types';
+import AdBanner from '../components/AdBanner';
 
 type Nav = StackNavigationProp<RootStackParamList>;
 
@@ -44,6 +45,7 @@ export default function PasswordManagerScreen() {
 
   return (
     <SafeAreaView style={styles.safe} edges={['bottom']}>
+      <AdBanner />
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scroll}>
         <View style={styles.illustrationWrap}>
           <PasswordIllustration />

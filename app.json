@@ -1,4 +1,10 @@
 {
   "name": "Authenticator",
-  "displayName": "Authenticator"
+  "displayName": "Authenticator",
+  "react-native-google-mobile-ads": {
+    "android_app_id": "ca-app-pub-4092006829041769~9347417726",
+    "delay_app_measurement_init": false,
+    "optimize_initialization": true,
+    "optimize_ad_loading": true
+  }
 }

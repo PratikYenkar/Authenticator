@@ -18,12 +18,14 @@ import { useAccountStore } from '../store/accountStore';
 import { validateBase32, validateAccountName } from '../utils/validators';
 import { getServiceColor, getServiceInitial } from '../utils/serviceLogos';
 import { useColors, AppColors, FONTS, SIZES } from '../constants/theme';
+import { useInterstitialAd } from '../hooks/useAdMob';
 
 export default function ManualEntryScreen() {
   const COLORS = useColors();
   const styles = makeStyles(COLORS);
   const navigation = useNavigation();
   const addAccount = useAccountStore(s => s.addAccount);
+  const { show: showInterstitial } = useInterstitialAd();
 
   const [issuer, setIssuer] = useState('');
   const [secret, setSecret] = useState('');
@@ -53,8 +55,9 @@ export default function ManualEntryScreen() {
       text2: `${issuer.trim()} has been added.`,
     });
 
+    showInterstitial();
     navigation.goBack();
-  }, [canSubmit, issuer, secret, username, addAccount, navigation]);
+  }, [canSubmit, issuer, secret, username, addAccount, navigation, showInterstitial]);
 
   const serviceColor = issuer ? getServiceColor(issuer) : COLORS.textLight;
   const initial = issuer ? getServiceInitial(issuer) : '?';

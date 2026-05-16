@@ -16,6 +16,7 @@ import { useScreenshot } from '../hooks/useScreenshot';
 import TOTPCard from '../components/TOTPCard';
 import EmptyState from '../components/EmptyState';
 import FABMenu from '../components/FABMenu';
+import AdBanner from '../components/AdBanner';
 import { useColors, AppColors, FONTS, SIZES } from '../constants/theme';
 import { useTranslation } from '../hooks/useTranslation';
 import { Account, RootStackParamList } from '../types';
@@ -122,6 +123,9 @@ export default function HomeScreen() {
           </TouchableOpacity>
         </View>
       </View>
+
+      {/* Banner Ad */}
+      <AdBanner />
 
       {/* Search */}
       <View style={styles.searchWrap}>

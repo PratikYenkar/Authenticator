@@ -11,6 +11,7 @@ import { useAccountStore } from '../store/accountStore';
 import { parseOtpAuthUri } from '../utils/otpauth';
 import { useColors, AppColors, SIZES } from '../constants/theme';
 import { RootStackParamList } from '../types';
+import { useInterstitialAd } from '../hooks/useAdMob';
 
 type Nav = StackNavigationProp<RootStackParamList>;
 
@@ -19,6 +20,7 @@ export default function QRScannerScreen() {
   const styles = makeStyles(COLORS);
   const navigation = useNavigation<Nav>();
   const addAccount = useAccountStore(s => s.addAccount);
+  const { show: showInterstitial } = useInterstitialAd();
 
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
   const scannedRef = useRef(false);
@@ -87,9 +89,10 @@ export default function QRScannerScreen() {
         text2: `${parsed.issuer} has been added successfully.`,
       });
 
+      showInterstitial();
       navigation.goBack();
     },
-    [addAccount, navigation],
+    [addAccount, navigation, showInterstitial],
   );
 
   const scanLineTranslate = scanLineAnim.interpolate({

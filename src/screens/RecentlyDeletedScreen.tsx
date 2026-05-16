@@ -14,6 +14,7 @@ import { useAccountStore } from '../store/accountStore';
 import { getServiceColor, getServiceInitial } from '../utils/serviceLogos';
 import { useColors, AppColors, SIZES } from '../constants/theme';
 import { DeletedAccount } from '../types';
+import AdBanner from '../components/AdBanner';
 
 function daysAgo(ts: number): string {
   const diff = Date.now() - ts;
@@ -96,6 +97,7 @@ export default function RecentlyDeletedScreen() {
 
   return (
     <SafeAreaView style={styles.safe} edges={['bottom']}>
+      <AdBanner />
       <View style={styles.banner}>
         <Icon name="information-circle-outline" size={18} color={COLORS.textSecondary} />
         <Text style={styles.bannerText}>
