@@ -1,4 +1,4 @@
-package com.authenticator
+package com.pratik.authenticator
 
 import com.facebook.react.ReactActivity
 import com.facebook.react.ReactActivityDelegate

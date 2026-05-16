@@ -1,4 +1,4 @@
-package com.authenticator
+package com.pratik.authenticator
 
 import com.facebook.react.ReactPackage
 import com.facebook.react.bridge.NativeModule

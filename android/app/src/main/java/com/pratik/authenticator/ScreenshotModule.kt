@@ -1,4 +1,4 @@
-package com.authenticator
+package com.pratik.authenticator
 
 import android.view.WindowManager
 import com.facebook.react.bridge.ReactApplicationContext

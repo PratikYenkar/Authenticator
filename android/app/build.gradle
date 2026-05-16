@@ -78,18 +78,18 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
 
-    namespace "com.authenticator"
+    namespace "com.pratik.authenticator"
     lint {
         checkReleaseBuilds false
         abortOnError false
     }
 
     defaultConfig {
-        applicationId "com.authenticator"
+        applicationId "com.pratik.authenticator"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
-        versionName "1.0"
+        versionCode 3
+        versionName "1.0.3"
         vectorDrawables.useSupportLibrary = true
     }
     packagingOptions {
