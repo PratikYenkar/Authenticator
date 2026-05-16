@@ -17,9 +17,11 @@ import Toast from 'react-native-toast-message';
 import { useAccountStore } from '../store/accountStore';
 import { validateBase32, validateAccountName } from '../utils/validators';
 import { getServiceColor, getServiceInitial } from '../utils/serviceLogos';
-import { COLORS, SIZES } from '../constants/theme';
+import { useColors, AppColors, FONTS, SIZES } from '../constants/theme';
 
 export default function ManualEntryScreen() {
+  const COLORS = useColors();
+  const styles = makeStyles(COLORS);
   const navigation = useNavigation();
   const addAccount = useAccountStore(s => s.addAccount);
 
@@ -69,7 +71,6 @@ export default function ManualEntryScreen() {
 
           <Text style={styles.sectionTitle}>Security</Text>
 
-          {/* Account / Issuer */}
           <View style={styles.fieldGroup}>
             <Text style={styles.label}>Account</Text>
             <View style={styles.inputRow}>
@@ -88,7 +89,6 @@ export default function ManualEntryScreen() {
             </View>
           </View>
 
-          {/* Secret Key */}
           <View style={styles.fieldGroup}>
             <Text style={styles.label}>Secret Key</Text>
             <View style={styles.inputWithIcon}>
@@ -123,7 +123,6 @@ export default function ManualEntryScreen() {
             )}
           </View>
 
-          {/* Username */}
           <View style={styles.fieldGroup}>
             <Text style={styles.label}>Username (Optional)</Text>
             <TextInput
@@ -153,98 +152,101 @@ export default function ManualEntryScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  safe: {
-    flex: 1,
-    backgroundColor: COLORS.background,
-  },
-  scroll: {
-    padding: 16,
-    paddingBottom: 40,
-  },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: '700',
-    color: COLORS.textPrimary,
-    marginTop: 24,
-    marginBottom: 16,
-  },
-  fieldGroup: {
-    marginBottom: 20,
-  },
-  label: {
-    fontSize: SIZES.sm,
-    fontWeight: '600',
-    color: COLORS.textSecondary,
-    marginBottom: 8,
-    textTransform: 'uppercase',
-    letterSpacing: 0.5,
-  },
-  inputRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 10,
-  },
-  inputWithIcon: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  inputFlex: {
-    flex: 1,
-  },
-  input: {
-    borderWidth: 1.5,
-    borderColor: COLORS.border,
-    borderRadius: 10,
-    paddingHorizontal: 14,
-    paddingVertical: 12,
-    fontSize: SIZES.base,
-    color: COLORS.textPrimary,
-    backgroundColor: COLORS.backgroundGray,
-  },
-  inputError: {
-    borderColor: COLORS.danger,
-  },
-  validationIcon: {
-    position: 'absolute',
-    right: 12,
-  },
-  errorRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: 4,
-  },
-  errorText: {
-    fontSize: SIZES.xs,
-    color: COLORS.danger,
-  },
-  logoPreview: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  logoText: {
-    color: COLORS.white,
-    fontSize: 18,
-    fontWeight: '700',
-  },
-  button: {
-    backgroundColor: COLORS.primary,
-    borderRadius: 25,
-    height: 50,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: 12,
-  },
-  buttonDisabled: {
-    backgroundColor: COLORS.textLight,
-  },
-  buttonText: {
-    color: COLORS.white,
-    fontSize: SIZES.base,
-    fontWeight: '700',
-  },
-});
+function makeStyles(C: AppColors) {
+  return StyleSheet.create({
+    safe: {
+      flex: 1,
+      backgroundColor: C.background,
+    },
+    scroll: {
+      padding: 16,
+      paddingBottom: 40,
+    },
+    sectionTitle: {
+      fontFamily: FONTS.bold,
+      fontSize: SIZES.xl,
+      color: C.textPrimary,
+      marginTop: 24,
+      marginBottom: 16,
+    },
+    fieldGroup: {
+      marginBottom: 22,
+    },
+    label: {
+      fontFamily: FONTS.semiBold,
+      fontSize: SIZES.xs,
+      color: C.textSecondary,
+      marginBottom: 8,
+      textTransform: 'uppercase',
+      letterSpacing: 0.6,
+    },
+    inputRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 10,
+    },
+    inputWithIcon: {
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
+    inputFlex: {
+      flex: 1,
+    },
+    input: {
+      borderWidth: 1.5,
+      borderColor: C.border,
+      borderRadius: 12,
+      paddingHorizontal: 16,
+      paddingVertical: 14,
+      fontFamily: FONTS.regular,
+      fontSize: SIZES.base,
+      color: C.textPrimary,
+      backgroundColor: C.backgroundGray,
+    },
+    inputError: {
+      borderColor: C.danger,
+    },
+    validationIcon: {
+      position: 'absolute',
+      right: 12,
+    },
+    errorRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginTop: 4,
+    },
+    errorText: {
+      fontSize: SIZES.xs,
+      color: C.danger,
+    },
+    logoPreview: {
+      width: 44,
+      height: 44,
+      borderRadius: 22,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    logoText: {
+      fontFamily: FONTS.bold,
+      color: C.white,
+      fontSize: SIZES.lg,
+    },
+    button: {
+      backgroundColor: C.primary,
+      borderRadius: 28,
+      height: 56,
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+      marginTop: 16,
+    },
+    buttonDisabled: {
+      backgroundColor: C.textLight,
+    },
+    buttonText: {
+      fontFamily: FONTS.bold,
+      color: C.white,
+      fontSize: SIZES.base,
+    },
+  });
+}

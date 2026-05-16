@@ -12,7 +12,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import Toast from 'react-native-toast-message';
 import { useAccountStore } from '../store/accountStore';
 import { getServiceColor, getServiceInitial } from '../utils/serviceLogos';
-import { COLORS, SIZES } from '../constants/theme';
+import { useColors, AppColors, SIZES } from '../constants/theme';
 import { DeletedAccount } from '../types';
 
 function daysAgo(ts: number): string {
@@ -24,6 +24,8 @@ function daysAgo(ts: number): string {
 }
 
 export default function RecentlyDeletedScreen() {
+  const COLORS = useColors();
+  const styles = makeStyles(COLORS);
   const recentlyDeleted = useAccountStore(s => s.recentlyDeleted);
   const restoreAccount = useAccountStore(s => s.restoreAccount);
   const permanentDelete = useAccountStore(s => s.permanentDelete);
@@ -94,7 +96,6 @@ export default function RecentlyDeletedScreen() {
 
   return (
     <SafeAreaView style={styles.safe} edges={['bottom']}>
-      {/* Info Banner */}
       <View style={styles.banner}>
         <Icon name="information-circle-outline" size={18} color={COLORS.textSecondary} />
         <Text style={styles.bannerText}>
@@ -121,101 +122,104 @@ export default function RecentlyDeletedScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  safe: {
-    flex: 1,
-    backgroundColor: COLORS.background,
-  },
-  banner: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: COLORS.backgroundGray,
-    padding: 12,
-    margin: 12,
-    borderRadius: 8,
-    gap: 8,
-  },
-  bannerText: {
-    fontSize: SIZES.sm,
-    color: COLORS.textSecondary,
-    flex: 1,
-  },
-  row: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-  },
-  logo: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  logoText: {
-    color: COLORS.white,
-    fontSize: 18,
-    fontWeight: '700',
-  },
-  info: {
-    flex: 1,
-    marginLeft: 12,
-  },
-  issuer: {
-    fontSize: SIZES.base,
-    fontWeight: '600',
-    color: COLORS.textPrimary,
-  },
-  sub: {
-    fontSize: SIZES.sm,
-    color: COLORS.textSecondary,
-    marginTop: 1,
-  },
-  whenRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: 2,
-  },
-  when: {
-    fontSize: SIZES.xs,
-    color: COLORS.textLight,
-  },
-  actions: {
-    flexDirection: 'row',
-    gap: 8,
-  },
-  btn: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 10,
-    paddingVertical: 6,
-    borderRadius: 6,
-    borderWidth: 1.5,
-  },
-  restoreBtn: {
-    borderColor: COLORS.primary,
-  },
-  restoreText: {
-    color: COLORS.primary,
-    fontSize: SIZES.sm,
-    fontWeight: '600',
-  },
-  deleteBtn: {
-    borderColor: COLORS.danger,
-  },
-  deleteText: {
-    color: COLORS.danger,
-    fontSize: SIZES.sm,
-    fontWeight: '600',
-  },
-  empty: {
-    alignItems: 'center',
-    paddingTop: 80,
-  },
-  emptyText: {
-    fontSize: SIZES.base,
-    color: COLORS.textSecondary,
-    marginTop: 16,
-  },
-});
+function makeStyles(C: AppColors) {
+  return StyleSheet.create({
+    safe: {
+      flex: 1,
+      backgroundColor: C.background,
+    },
+    banner: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      backgroundColor: C.backgroundGray,
+      padding: 12,
+      margin: 12,
+      borderRadius: 8,
+      gap: 8,
+    },
+    bannerText: {
+      fontSize: SIZES.sm,
+      color: C.textSecondary,
+      flex: 1,
+    },
+    row: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      paddingHorizontal: 16,
+      paddingVertical: 12,
+      backgroundColor: C.background,
+    },
+    logo: {
+      width: 44,
+      height: 44,
+      borderRadius: 22,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    logoText: {
+      color: C.white,
+      fontSize: 18,
+      fontWeight: '700',
+    },
+    info: {
+      flex: 1,
+      marginLeft: 12,
+    },
+    issuer: {
+      fontSize: SIZES.base,
+      fontWeight: '600',
+      color: C.textPrimary,
+    },
+    sub: {
+      fontSize: SIZES.sm,
+      color: C.textSecondary,
+      marginTop: 1,
+    },
+    whenRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginTop: 2,
+    },
+    when: {
+      fontSize: SIZES.xs,
+      color: C.textLight,
+    },
+    actions: {
+      flexDirection: 'row',
+      gap: 8,
+    },
+    btn: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      paddingHorizontal: 10,
+      paddingVertical: 6,
+      borderRadius: 6,
+      borderWidth: 1.5,
+    },
+    restoreBtn: {
+      borderColor: C.primary,
+    },
+    restoreText: {
+      color: C.primary,
+      fontSize: SIZES.sm,
+      fontWeight: '600',
+    },
+    deleteBtn: {
+      borderColor: C.danger,
+    },
+    deleteText: {
+      color: C.danger,
+      fontSize: SIZES.sm,
+      fontWeight: '600',
+    },
+    empty: {
+      alignItems: 'center',
+      paddingTop: 80,
+    },
+    emptyText: {
+      fontSize: SIZES.base,
+      color: C.textSecondary,
+      marginTop: 16,
+    },
+  });
+}

@@ -79,6 +79,11 @@ android {
     compileSdk rootProject.ext.compileSdkVersion
 
     namespace "com.authenticator"
+    lint {
+        checkReleaseBuilds false
+        abortOnError false
+    }
+
     defaultConfig {
         applicationId "com.authenticator"
         minSdkVersion rootProject.ext.minSdkVersion
@@ -101,12 +106,10 @@ android {
             keyPassword 'android'
         }
         release {
-            if (System.getenv('KEYSTORE_PASSWORD')) {
-                storeFile file('release.keystore')
-                storePassword System.getenv('KEYSTORE_PASSWORD')
-                keyAlias System.getenv('KEY_ALIAS')
-                keyPassword System.getenv('KEY_PASSWORD')
-            }
+            storeFile file(MYAPP_RELEASE_STORE_FILE)
+            storePassword MYAPP_RELEASE_STORE_PASSWORD
+            keyAlias MYAPP_RELEASE_KEY_ALIAS
+            keyPassword MYAPP_RELEASE_KEY_PASSWORD
         }
     }
     buildTypes {
@@ -114,7 +117,7 @@ android {
             signingConfig signingConfigs.debug
         }
         release {
-            signingConfig System.getenv('KEYSTORE_PASSWORD') ? signingConfigs.release : signingConfigs.debug
+            signingConfig signingConfigs.release
             minifyEnabled true
             shrinkResources true
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"

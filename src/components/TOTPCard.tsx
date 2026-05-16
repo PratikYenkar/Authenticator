@@ -9,7 +9,7 @@ import { Account } from '../types';
 import { useTOTP } from '../hooks/useTOTP';
 import CountdownRing from './CountdownRing';
 import ServiceLogo from './ServiceLogo';
-import { COLORS, FONTS, SHADOWS, SIZES } from '../constants/theme';
+import { useColors, AppColors, FONTS, SHADOWS, SIZES } from '../constants/theme';
 import { useAccountStore } from '../store/accountStore';
 
 interface Props {
@@ -17,6 +17,8 @@ interface Props {
 }
 
 function TOTPCard({ account }: Props) {
+  const COLORS = useColors();
+  const styles = makeStyles(COLORS);
   const { formattedCode, code } = useTOTP(account);
   const removeAccount = useAccountStore(s => s.removeAccount);
 
@@ -52,7 +54,7 @@ function TOTPCard({ account }: Props) {
       onLongPress={handleLongPress}
       activeOpacity={0.75}>
 
-      <ServiceLogo issuer={account.issuer} size={46} />
+      <ServiceLogo issuer={account.issuer} size={46} rounded={false} />
 
       <View style={styles.info}>
         <Text style={styles.issuer} numberOfLines={1}>{account.issuer}</Text>
@@ -72,47 +74,49 @@ function TOTPCard({ account }: Props) {
 
 export default React.memo(TOTPCard);
 
-const styles = StyleSheet.create({
-  card: {
-    backgroundColor: COLORS.cardBg,
-    borderRadius: 16,
-    paddingHorizontal: 16,
-    paddingVertical: 14,
-    marginHorizontal: 16,
-    flexDirection: 'row',
-    alignItems: 'center',
-    ...SHADOWS.small,
-    borderWidth: 1,
-    borderColor: COLORS.border,
-  },
-  info: {
-    flex: 1,
-    marginHorizontal: 12,
-  },
-  issuer: {
-    fontFamily: FONTS.semiBold,
-    fontSize: SIZES.base,
-    color: COLORS.textPrimary,
-  },
-  username: {
-    fontFamily: FONTS.regular,
-    fontSize: SIZES.sm,
-    color: COLORS.textSecondary,
-    marginTop: 1,
-  },
-  codeRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: 5,
-  },
-  code: {
-    fontFamily: FONTS.bold,
-    fontSize: 26,
-    color: COLORS.primary,
-    letterSpacing: 3,
-  },
-  copyIcon: {
-    marginLeft: 8,
-    marginTop: 2,
-  },
-});
+function makeStyles(C: AppColors) {
+  return StyleSheet.create({
+    card: {
+      backgroundColor: C.cardBg,
+      borderRadius: 16,
+      paddingHorizontal: 16,
+      paddingVertical: 14,
+      marginHorizontal: 16,
+      flexDirection: 'row',
+      alignItems: 'center',
+      ...SHADOWS.small,
+      borderWidth: 1,
+      borderColor: C.border,
+    },
+    info: {
+      flex: 1,
+      marginHorizontal: 12,
+    },
+    issuer: {
+      fontFamily: FONTS.semiBold,
+      fontSize: SIZES.base,
+      color: C.textPrimary,
+    },
+    username: {
+      fontFamily: FONTS.regular,
+      fontSize: SIZES.sm,
+      color: C.textSecondary,
+      marginTop: 1,
+    },
+    codeRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginTop: 5,
+    },
+    code: {
+      fontFamily: FONTS.bold,
+      fontSize: 26,
+      color: C.primary,
+      letterSpacing: 3,
+    },
+    copyIcon: {
+      marginLeft: 8,
+      marginTop: 2,
+    },
+  });
+}

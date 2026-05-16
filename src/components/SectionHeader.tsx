@@ -1,12 +1,14 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { COLORS, SIZES } from '../constants/theme';
+import { useColors, AppColors, FONTS, SIZES } from '../constants/theme';
 
 interface Props {
   title: string;
 }
 
 export default function SectionHeader({ title }: Props) {
+  const COLORS = useColors();
+  const styles = makeStyles(COLORS);
   return (
     <View style={styles.container}>
       <Text style={styles.text}>{title}</Text>
@@ -14,16 +16,20 @@ export default function SectionHeader({ title }: Props) {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: COLORS.backgroundGray,
-    paddingTop: 20,
-    paddingHorizontal: 16,
-    paddingBottom: 8,
-  },
-  text: {
-    fontSize: SIZES.base,
-    fontWeight: '700',
-    color: COLORS.textPrimary,
-  },
-});
+function makeStyles(C: AppColors) {
+  return StyleSheet.create({
+    container: {
+      backgroundColor: C.backgroundGray,
+      paddingTop: 22,
+      paddingHorizontal: 16,
+      paddingBottom: 8,
+    },
+    text: {
+      fontFamily: FONTS.bold,
+      fontSize: SIZES.sm,
+      color: C.textSecondary,
+      textTransform: 'uppercase',
+      letterSpacing: 0.8,
+    },
+  });
+}

@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text } from 'react-native';
 import Svg, { Circle } from 'react-native-svg';
 import { useCountdown } from '../hooks/useCountdown';
-import { COLORS } from '../constants/theme';
+import { useColors } from '../constants/theme';
 
 interface Props {
   period?: number;
@@ -14,6 +14,7 @@ const RADIUS = (SIZE - STROKE_WIDTH) / 2;
 const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
 
 export default function CountdownRing({ period = 30 }: Props) {
+  const COLORS = useColors();
   const { timeRemaining, progress, isUrgent, isWarning } = useCountdown(period);
 
   const strokeColor = isUrgent

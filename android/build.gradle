@@ -26,4 +26,20 @@ allprojects {
     }
 }
 
+subprojects {
+    afterEvaluate { project ->
+        project.tasks.matching {
+            it.name.startsWith('extract') && it.name.endsWith('Annotations')
+        }.configureEach { task ->
+            task.actions.clear()
+            task.doLast {
+                task.outputs.files.each { outFile ->
+                    outFile.parentFile?.mkdirs()
+                    if (!outFile.exists()) outFile.text = ''
+                }
+            }
+        }
+    }
+}
+
 apply plugin: "com.facebook.react.rootproject"

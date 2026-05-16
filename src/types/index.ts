@@ -20,6 +20,7 @@ export interface GuideStep {
   title: string;
   summary: string;
   detail: string;
+  image?: import('../components/StepIllustration').StepImageType;
 }
 
 export interface GuideService {
@@ -39,6 +40,22 @@ export interface AppSettings {
   isPremium: boolean;
 }
 
+export interface SavedWebsite {
+  id: string;
+  title: string;
+  url: string;
+  username: string;
+  password: string;
+  createdAt: number;
+}
+
+export interface SavedNote {
+  id: string;
+  title: string;
+  content: string;
+  createdAt: number;
+}
+
 export type RootStackParamList = {
   Home: undefined;
   QRScanner: undefined;
@@ -47,4 +64,11 @@ export type RootStackParamList = {
   GuideDetail: { service: GuideService };
   Settings: undefined;
   RecentlyDeleted: undefined;
+  PasswordManager: undefined;
+  GeneratePassword: undefined;
+  ManagePassword: undefined;
+  CreateEntry: { type: 'website' | 'note' };
+  ImportGoogleAuth: undefined;
+  Language: undefined;
+  HowToUse: undefined;
 };

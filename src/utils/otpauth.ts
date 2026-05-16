@@ -149,23 +149,55 @@ function computeTOTP(secret: string, digits: number, period: number): string {
 
 export function parseOtpAuthUri(uri: string): Partial<Account> | null {
   try {
-    const url = new URL(uri);
-    if (url.protocol !== 'otpauth:') return null;
-    if (url.host !== 'totp') return null;
+    // Manual parsing — new URL() doesn't reliably handle otpauth:// in Hermes
+    const trimmed = uri.trim();
 
-    const label = decodeURIComponent(url.pathname.slice(1));
-    const params = url.searchParams;
-    const secret = params.get('secret')?.toUpperCase().replace(/\s/g, '');
+    // Accept both otpauth://totp/ and otpauth://hotp/ (normalise to totp flow)
+    const TOTP_PREFIX = 'otpauth://totp/';
+    const HOTP_PREFIX = 'otpauth://hotp/';
+    if (!trimmed.startsWith(TOTP_PREFIX) && !trimmed.startsWith(HOTP_PREFIX)) {
+      return null;
+    }
 
+    const afterScheme = trimmed.startsWith(TOTP_PREFIX)
+      ? trimmed.slice(TOTP_PREFIX.length)
+      : trimmed.slice(HOTP_PREFIX.length);
+
+    // Split label and query string
+    const qIdx = afterScheme.indexOf('?');
+    const rawLabel = qIdx === -1 ? afterScheme : afterScheme.slice(0, qIdx);
+    const queryStr = qIdx === -1 ? '' : afterScheme.slice(qIdx + 1);
+
+    const label = decodeURISafe(rawLabel);
+
+    // Parse query params manually
+    const params = new Map<string, string>();
+    if (queryStr) {
+      for (const pair of queryStr.split('&')) {
+        const eqIdx = pair.indexOf('=');
+        if (eqIdx > 0) {
+          const key = decodeURISafe(pair.slice(0, eqIdx)).toLowerCase();
+          const val = decodeURISafe(pair.slice(eqIdx + 1));
+          params.set(key, val);
+        }
+      }
+    }
+
+    const rawSecret = params.get('secret') ?? '';
+    const secret = rawSecret.toUpperCase().replace(/[\s=]/g, '');
     if (!secret || !isValidBase32(secret)) return null;
 
-    const issuer =
-      params.get('issuer') ||
+    const issuerParam = params.get('issuer') ?? '';
+    const issuer = issuerParam ||
       (label.includes(':') ? label.split(':')[0] : label) ||
       'Unknown';
-    const accountName = label.includes(':') ? label.split(':')[1].trim() : label;
+    const accountName = label.includes(':') ? label.split(':').slice(1).join(':').trim() : label;
 
-    const algorithm = params.get('algorithm') as 'SHA1' | 'SHA256' | 'SHA512' | null;
+    const algorithmRaw = (params.get('algorithm') ?? 'SHA1').toUpperCase();
+    const algorithm = (['SHA1', 'SHA256', 'SHA512'].includes(algorithmRaw)
+      ? algorithmRaw
+      : 'SHA1') as 'SHA1' | 'SHA256' | 'SHA512';
+
     const digits = Number(params.get('digits') || 6);
     const period = Number(params.get('period') || 30);
 
@@ -173,13 +205,17 @@ export function parseOtpAuthUri(uri: string): Partial<Account> | null {
       issuer: issuer.trim(),
       accountName: accountName.trim(),
       secret,
-      algorithm: (algorithm ?? 'SHA1') as 'SHA1' | 'SHA256' | 'SHA512',
+      algorithm,
       digits: (digits === 8 ? 8 : 6) as 6 | 8,
       period: (period === 60 ? 60 : 30) as 30 | 60,
     };
   } catch {
     return null;
   }
+}
+
+function decodeURISafe(s: string): string {
+  try { return decodeURIComponent(s); } catch { return s; }
 }
 
 export function generateTOTP(account: Account): string {
@@ -204,8 +240,6 @@ export function getProgress(period: number = 30): number {
 }
 
 export function isValidBase32(secret: string): boolean {
-  return (
-    /^[A-Z2-7]+=*$/i.test(secret.replace(/\s/g, '')) &&
-    secret.replace(/\s/g, '').replace(/=+$/, '').length >= 8
-  );
+  const cleaned = secret.replace(/\s/g, '').replace(/=+$/, '');
+  return /^[A-Z2-7]+$/i.test(cleaned) && cleaned.length >= 4;
 }

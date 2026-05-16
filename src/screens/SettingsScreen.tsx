@@ -16,12 +16,16 @@ import { useScreenshot } from '../hooks/useScreenshot';
 import PremiumBanner from '../components/PremiumBanner';
 import SectionHeader from '../components/SectionHeader';
 import SettingsRow from '../components/SettingsRow';
-import { COLORS } from '../constants/theme';
+import { useColors, AppColors } from '../constants/theme';
+import { useTranslation } from '../hooks/useTranslation';
 import { RootStackParamList } from '../types';
 
 type Nav = StackNavigationProp<RootStackParamList>;
 
 export default function SettingsScreen() {
+  const COLORS = useColors();
+  const styles = makeStyles(COLORS);
+  const t = useTranslation();
   const navigation = useNavigation<Nav>();
   const {
     biometricEnabled,
@@ -32,7 +36,6 @@ export default function SettingsScreen() {
     setNotifications,
     setScreenshot,
     setDarkMode,
-    setLanguage,
   } = useSettingsStore();
 
   const { checkAvailability, authenticate } = useBiometrics();
@@ -77,30 +80,12 @@ export default function SettingsScreen() {
   );
 
   const handleLanguage = useCallback(() => {
-    Alert.alert('Change Language', 'Select a language:', [
-      { text: 'English', onPress: () => setLanguage('en') },
-      { text: 'Spanish', onPress: () => setLanguage('es') },
-      { text: 'French', onPress: () => setLanguage('fr') },
-      { text: 'German', onPress: () => setLanguage('de') },
-      { text: 'Cancel', style: 'cancel' },
-    ]);
-  }, [setLanguage]);
-
-  const handleImportGoogle = useCallback(() => {
-    Alert.alert(
-      'Import from Google Authenticator',
-      '1. Open Google Authenticator\n2. Tap the menu (three dots)\n3. Tap Export accounts\n4. Select the accounts you want to export\n5. Scan the QR code shown using this app\'s QR scanner',
-      [{ text: 'Got It' }],
-    );
-  }, []);
+    navigation.navigate('Language');
+  }, [navigation]);
 
   const handleHowToUse = useCallback(() => {
-    Alert.alert(
-      'How To Use',
-      '1. Tap the + button to add an account\n2. Scan the QR code from your service\'s 2FA setup page\n3. Or enter the setup key manually\n4. The 6-digit code refreshes every 30 seconds\n5. Enter the code when logging in to verify your identity',
-      [{ text: 'Got It' }],
-    );
-  }, []);
+    navigation.navigate('HowToUse');
+  }, [navigation]);
 
   const handleShare = useCallback(async () => {
     try {
@@ -118,107 +103,98 @@ export default function SettingsScreen() {
       <ScrollView showsVerticalScrollIndicator={false}>
         <PremiumBanner />
 
-        <SectionHeader title="Preferences" />
+        <SectionHeader title={t.preferences} />
         <SettingsRow
-          icon="download-outline"
-          label="Import / Export"
-          onPress={() => Alert.alert('Coming Soon', 'Import/Export feature is coming soon!')}
+          icon="key-outline"
+          label={t.passwordManager}
+          onPress={() => navigation.navigate('PasswordManager')}
         />
         <SettingsRow
           icon="trash-outline"
-          label="Recently Deleted"
+          label={t.recentlyDeleted}
           onPress={() => navigation.navigate('RecentlyDeleted')}
         />
         <SettingsRow
-          icon="key-outline"
-          label="Password Manager"
-          onPress={() => Alert.alert('Coming Soon', 'Password Manager integration coming soon!')}
-        />
-        <SettingsRow
           icon="language-outline"
-          label="Change Language"
+          label={t.changeLanguage}
           onPress={handleLanguage}
         />
 
-        <SectionHeader title="Authorize" />
+        <SectionHeader title={t.authorize} />
         <SettingsRow
           icon="finger-print-outline"
-          label="Biometric Lock"
-          sublabel="Require biometrics to open app"
+          label={t.biometricLock}
+          sublabel={t.biometricSub}
           type="switch"
           value={biometricEnabled}
           onValueChange={handleBiometricToggle}
         />
         <SettingsRow
           icon="notifications-outline"
-          label="Notifications"
+          label={t.notifications}
           type="switch"
           value={notificationsEnabled}
           onValueChange={setNotifications}
         />
         <SettingsRow
           icon="camera-outline"
-          label="Allow Screenshot"
-          sublabel="Disable for extra security"
+          label={t.allowScreenshot}
+          sublabel={t.screenshotSub}
           type="switch"
           value={screenshotAllowed}
           onValueChange={handleScreenshotToggle}
         />
         <SettingsRow
           icon="moon-outline"
-          label="Dark Mode"
-          sublabel="Coming soon"
+          label={t.darkMode}
           type="switch"
           value={darkMode}
           onValueChange={setDarkMode}
         />
 
-        <SectionHeader title="Guides" />
+        <SectionHeader title={t.guides} />
         <SettingsRow
           icon="logo-google"
-          label="How to Import Google Authenticator"
-          onPress={handleImportGoogle}
+          label={t.importGoogle}
+          onPress={() => navigation.navigate('ImportGoogleAuth')}
         />
         <SettingsRow
           icon="book-outline"
-          label="2FA Guide"
+          label={t.guide2FA}
           onPress={() => navigation.navigate('GuideList')}
         />
         <SettingsRow
           icon="help-circle-outline"
-          label="How To Use"
+          label={t.howToUse}
           onPress={handleHowToUse}
         />
 
-        <SectionHeader title="Control Settings" />
+        <SectionHeader title={t.controlSettings} />
         <SettingsRow
           icon="shield-outline"
-          label="Privacy Policy"
-          onPress={() => Alert.alert('Privacy Policy', 'Your privacy is our priority. We do not collect or share your 2FA secrets. All data is stored encrypted on your device.')}
+          label={t.privacyPolicy}
+          onPress={() => Linking.openURL('https://privacypolicybypratik.blogspot.com/2026/05/privacy-policy-this-privacy-policy.html')}
         />
         <SettingsRow
           icon="share-social-outline"
-          label="Share With Friends"
+          label={t.shareWithFriends}
           onPress={handleShare}
         />
-        <SettingsRow
-          icon="apps-outline"
-          label="More Apps"
-          onPress={() => Alert.alert('More Apps', 'Visit the Play Store for more apps!')}
-        />
-        <SettingsRow
+        {/* <SettingsRow
           icon="star-outline"
-          label="Rate Us"
-          onPress={() => Alert.alert('Rate Us', 'Thank you for using 2FA Authenticator! Please leave a review on the Play Store.')}
-        />
+          label={t.rateUs}
+          onPress={() => Alert.alert(t.rateUs, 'Thank you for using 2FA Authenticator! Please leave a review on the Play Store.')}
+        /> */}
       </ScrollView>
     </SafeAreaView>
   );
 }
 
-const styles = StyleSheet.create({
-  safe: {
-    flex: 1,
-    backgroundColor: COLORS.backgroundGray,
-  },
-});
+function makeStyles(C: AppColors) {
+  return StyleSheet.create({
+    safe: {
+      flex: 1,
+      backgroundColor: C.backgroundGray,
+    },
+  });
+}

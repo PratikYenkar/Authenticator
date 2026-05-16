@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <!-- Drop shadow -->
+  <ellipse cx="256" cy="480" rx="90" ry="18" fill="#C8C8D0" opacity="0.6"/>
+
+  <!-- Outer shield (dark navy border) -->
+  <path d="M256 20 L440 90 L440 270 C440 370 356 430 256 478 C156 430 72 370 72 270 L72 90 Z"
+        fill="#172554"/>
+
+  <!-- Inner shield (bright blue fill) -->
+  <path d="M256 44 L420 108 L420 268 C420 358 344 414 256 458 C168 414 92 358 92 268 L92 108 Z"
+        fill="#3B5BDB"/>
+
+  <!-- Shield highlight (lighter blue on left side) -->
+  <path d="M256 44 L92 108 L92 268 C92 358 168 414 256 458 L256 44 Z"
+        fill="#4C6EF5" opacity="0.5"/>
+
+  <!-- Padlock body (white circle) -->
+  <circle cx="256" cy="300" r="90" fill="white"/>
+
+  <!-- Padlock shackle (open - shifted right) -->
+  <path d="M220 300 L220 240 C220 200 296 200 296 240 L296 270"
+        fill="none" stroke="white" stroke-width="36" stroke-linecap="round"/>
+
+  <!-- Padlock keyhole -->
+  <circle cx="256" cy="295" r="22" fill="#3B5BDB"/>
+  <rect x="245" y="295" width="22" height="30" rx="6" fill="#3B5BDB"/>
+</svg>

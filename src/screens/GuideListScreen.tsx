@@ -12,12 +12,14 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { GUIDES } from '../data/guideData';
 import ServiceRow from '../components/ServiceRow';
-import { COLORS, SIZES } from '../constants/theme';
+import { useColors, AppColors, FONTS, SIZES } from '../constants/theme';
 import { GuideService, RootStackParamList } from '../types';
 
 type Nav = StackNavigationProp<RootStackParamList>;
 
 export default function GuideListScreen() {
+  const COLORS = useColors();
+  const styles = makeStyles(COLORS);
   const navigation = useNavigation<Nav>();
   const [query, setQuery] = useState('');
 
@@ -38,7 +40,6 @@ export default function GuideListScreen() {
 
   return (
     <SafeAreaView style={styles.safe} edges={['bottom']}>
-      {/* Search */}
       <View style={styles.searchWrap}>
         <Icon name="search-outline" size={18} color={COLORS.textLight} style={styles.searchIcon} />
         <TextInput
@@ -71,36 +72,42 @@ export default function GuideListScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  safe: {
-    flex: 1,
-    backgroundColor: COLORS.background,
-  },
-  searchWrap: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: COLORS.backgroundGray,
-    borderRadius: 12,
-    margin: 16,
-    paddingHorizontal: 12,
-    height: 44,
-  },
-  searchIcon: {
-    marginRight: 8,
-  },
-  searchInput: {
-    flex: 1,
-    fontSize: SIZES.base,
-    color: COLORS.textPrimary,
-  },
-  empty: {
-    alignItems: 'center',
-    paddingTop: 60,
-  },
-  emptyText: {
-    fontSize: SIZES.base,
-    color: COLORS.textSecondary,
-    marginTop: 12,
-    textAlign: 'center',
-  },
-});
+function makeStyles(C: AppColors) {
+  return StyleSheet.create({
+    safe: {
+      flex: 1,
+      backgroundColor: C.background,
+    },
+    searchWrap: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      backgroundColor: C.backgroundGray,
+      borderRadius: 14,
+      margin: 16,
+      paddingHorizontal: 14,
+      height: 50,
+      borderWidth: 1,
+      borderColor: C.border,
+    },
+    searchIcon: {
+      marginRight: 10,
+    },
+    searchInput: {
+      flex: 1,
+      fontFamily: FONTS.regular,
+      fontSize: SIZES.base,
+      color: C.textPrimary,
+    },
+    empty: {
+      alignItems: 'center',
+      paddingTop: 60,
+    },
+    emptyText: {
+      fontFamily: FONTS.regular,
+      fontSize: SIZES.base,
+      color: C.textSecondary,
+      marginTop: 12,
+      textAlign: 'center',
+    },
+  });
+}

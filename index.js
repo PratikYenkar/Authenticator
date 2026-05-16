@@ -13,7 +13,7 @@ function Root() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <App />
-      <Toast />
+      <Toast position="bottom" bottomOffset={40} />
     </GestureHandlerRootView>
   );
 }
